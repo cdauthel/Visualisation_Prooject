@@ -1,0 +1,87 @@
+---
+title: "Commentaire_ggplot2_BCJ"
+author: "Baptiste_Cyriack_Jules"
+date: "2023-10-31"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## ggplot2
+
+Chargement des librairies
+```{r pressure, echo=FALSE}
+library(ggplot2)
+```
+
+Lecture des données
+```{r pressure, echo=FALSE}
+ipsos <- read.xlsx("ipsos.xlsx")
+```
+
+Trie des données
+```{r pressure, echo=FALSE}
+sort.ipsos <- ipsos[order(ipsos$Percent), ]
+```
+
+Graphique ggplot2
+```{r pressure, echo=FALSE}
+p <- ggplot(data = sort.ipsos, aes(x = Percent, y = reorder(Country, Percent)))
+```
+
+```{r pressure, echo=FALSE}
+p <- p + geom_bar(stat = "identity", fill = c(rep("grey", 4), "pink", rep("grey", 8), "pink", rep("grey", 2)), width = 0.85)
+```
+
+```{r pressure, echo=FALSE}
+p <- p + geom_text(aes(label = paste(Percent, )), hjust = -0.2, family = "Arial", size = 3) +
+         geom_text(data = subset(sort.ipsos, Country %in% c("Germany", "Brazil")),
+                   aes(label = Country), hjust = 3, family = "Arial Black", size = 3)
+
+OU ???
+  scale_y_discrete(aes(labels = paste(Country, Percent)))
+
+```
+
+```{r pressure, echo=FALSE}
+p <- p + geom_rect(data = data.frame(xmin = c(0, 40, 80), xmax = c(20, 60, 100), ymin = 0, ymax = 17),
+                   aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+                   fill = "skyblue", alpha = 0.25, inherit.aes = FALSE) +
+         geom_rect(data = data.frame(xmin = c(20, 60), xmax = c(40, 80), ymin = 0, ymax = 17),
+                   aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+                   fill = "skyblue", alpha = 0.4, inherit.aes = FALSE)
+```
+
+```{r pressure, echo=FALSE}
+p <- p + geom_segment(aes(x = 45, y = 0, yend = 17.5), color = "skyblue3", size = 0.7, xend = 45) +
+         geom_segment(aes(x = 45, y = -0.2, yend = 0.15), color = "black", size = 0.9, xend = 45) +
+         geom_segment(aes(x = 45, y = 17.15, yend = 17.5), color = "black", size = 0.9, xend = 45)
+```
+
+```{r pressure, echo=FALSE}
+p <- p + geom_text(aes(x = 40, y = 17.4, label = "Average"), hjust = 1, family = "Arial", size = 3, fontface = "italic") +
+         geom_text(aes(x = 44, y = 17.4, label = "45"), hjust = 1, family = "Arial Black", size = 3) +
+         geom_text(aes(x = -16, y = 20, label = "'I Definitely Believe in God or a Supreme Being'"), hjust = 0, family = "Arial Black", size = 3, fontface = "bold") +
+         geom_text(aes(x = -16, y = 19, label = "was said in 2010 in:"), hjust = 0, family = "Arial", size = 3) +
+         geom_text(aes(x = 85, y = 17.4, label = "All values in percent"), hjust = 0, family = "Arial", size = 3, fontface = "italic") +
+         geom_text(aes(x = 72, y = -1, label = "Source: www.ipsos-na.com, Design: Stefan Fichtel, ixtract"), hjust = 0, family = "Arial", size = 2, fontface = "italic")
+```
+
+```{r pressure, echo=FALSE}
+p <- p + scale_x_continuous(breaks = c(0, 20, 40, 60, 80, 100))
+```
+
+```{r pressure, echo=FALSE}
+p <- p + theme_minimal() +
+         theme(panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank())
+```
+
+```{r pressure, echo=FALSE}
+p
+```
+
+
+
