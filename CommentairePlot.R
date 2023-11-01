@@ -50,6 +50,9 @@ mtext("was said in 2010 in:",3,line=-0.4,adj=0,cex=0.9,outer=T)
 mtext("Source: www.ipsos-na.com, Design: Stefan Fichtel, ixtract",1,line=1,adj=1.0,cex=0.65,outer=T,font=3)
 dev.off()
 
+
+
+
 # Chargement de la bibliothèque ggplot2
 library(ggplot2)
 
@@ -61,27 +64,34 @@ sort.ipsos <- ipsos[order(ipsos$Percent), ]
 
 # Création du graphique à l'aide de ggplot2
 ggplot(data = sort.ipsos, aes(x = Percent, y = reorder(Country, Percent))) +
-  geom_bar(stat = "identity", fill = "grey") +
-  geom_text(aes(label = Percent), hjust = -0.2, family = "Arial", size = 3) +
-  geom_text(data = subset(sort.ipsos, Country %in% c("Germany", "Brazil")),
-            aes(label = Country), hjust = 1.2, family = "Arial Black", size = 3) +
-  geom_rect(data = data.frame(xmin = c(0, 20, 40, 60, 80), xmax = c(20, 40, 60, 80, 100),
-                              ymin = -Inf, ymax = Inf),
+  geom_bar(stat = "identity", fill = c(rep("grey", 4), "#FF00D2", rep("grey", 8), "#FF00D2", rep("grey", 2)), width = 0.85) +
+  geom_rect(data = data.frame(xmin = c(0, 40, 80), xmax = c(20, 60, 100),
+                              ymin = 0, ymax = 17),
             aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-            fill = "skyblue", alpha = 0.2, inherit.aes = FALSE) +
-  geom_segment(aes(x = 45, y = -Inf, yend = 20), color = "skyblue3", size = 1.5,
-               arrow = arrow(type = "closed", length = unit(0.15, "inches")), xend = 45) +
-  geom_text(aes(x = 45, y = 21, label = "Average"), hjust = -0.5, family = "Arial", size = 3) +
-  geom_text(aes(x = 45, y = -2, label = "45"), hjust = -0.5, family = "Arial", size = 3) +
-  labs(x = "Pourcentage", y = "Pays", title = "'Je crois définitivement en Dieu ou en un Être suprême' dit en 2010 à :") +
+            fill = "LightSkyBlue1", alpha = 0.3, inherit.aes = FALSE) +
+  geom_rect(data = data.frame(xmin = c(20, 60), xmax = c(40, 80),
+                              ymin = 0, ymax = 17),
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "LightSkyBlue1", alpha = 0.45, inherit.aes = FALSE) +
+  scale_y_discrete(aes(labels = paste(Country, Percent))) +
+  geom_text(data = subset(sort.ipsos, !(Country %in% c("Germany", "Brazil"))), aes(x = -16, y = reorder(Country, Percent), label = paste(Country, Percent)), hjust = 0, family = "Arial", size = 4) +
+  geom_text(data = subset(sort.ipsos, Country %in% c("Germany", "Brazil")), aes(x = -16, y = reorder(Country, Percent), label = paste(Country, Percent)), hjust = 0, family = "Arial Black", size = 4) +
+  
+  geom_segment(aes(x = 45, y = 0, yend = 17.5), color = "skyblue3", size = 0.7, xend = 45) +
+  geom_segment(aes(x = 45, y = -0.2, yend = 0.15), color = "black", size = 0.9, xend = 45) +
+  geom_segment(aes(x = 45, y = 17.15, yend = 17.5), color = "black", size = 0.9, xend = 45) +
+  
+  
+  geom_text(aes(x = 40, y = 17.4, label = "Average"), hjust = 1, family = "Arial", size = 3, fontface = "italic") +
+  geom_text(aes(x = 44, y = 17.4, label = "45"), hjust = 1, family = "Arial Black", size = 3) +
+  geom_text(aes(x = -20, y = 20, label = "'I Definitely Believe in God or a Supreme Being'"), hjust = 0, family = "Arial Black", size = 3, fontface = "bold") +
+  geom_text(aes(x = -20, y = 19, label = "was said in 2010 in:"), hjust = 0, family = "Arial", size = 3) +
+  geom_text(aes(x = 85, y = 17.4, label = "All values in percent"), hjust = 0, family = "Arial", size = 3, fontface = "italic") +
+  geom_text(aes(x = 72, y = -1, label = "Source: www.ipsos-na.com, Design: Stefan Fichtel, ixtract"), hjust = 0, family = "Arial", size = 2, fontface = "italic") +
+  labs(x = element_blank(), y = element_blank(), title = element_blank()) +
   theme_minimal() +
-  theme(axis.text.x = element_text(size = 10, face = "bold"),
-        axis.title = element_text(size = 12, face = "bold"),
-        plot.title = element_text(size = 14, face = "bold"))
-
-<ipsos.xlsx>
-<Exemple-de-code-commenté.pdf>
-
-Indispensable pour faire la version ggplot2...
-
-<07. Comparing ggplot2 and R Base Graphics.pdf>
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_x_continuous(breaks = c(0, 20, 40, 60, 80, 100))
